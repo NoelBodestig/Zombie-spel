@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/Game.css" />
+    
+</head>
+<body>
+           <style>
+                body {background-image: url("plats 1.png")}
+                </style>
+    <script src="simple.js">
+
+    var zombies = [];
+    var skotts = [];
+    var player1 = {x:30, y:totalHeight/2 - 30};
+    var player2 = {x:30, y:totalHeight/2 - 20};
+    var i = 0;
+    var win = 0;
+    var end = 0;
+    skottskada = 10;
+    var murhp = 1000;
+    var zombieskada = 5;
+    var zombiedelay = 100;
+    var zombieattack = 0;
+    var p = 0;
+    var o = 0;
+    var points = 0;
+    var skottm = [];
+    var skjuta = 0;
+    //Ljud
+    var musicbg = new Audio("bakgrundsmusik.mp3");
+    for (var s = 0; s < 100;s++){
+        skottm[s] = new Audio("gun-gunshot-02.mp3");    
+    }
+    
+    //Zombie stats och spawn placering
+    while (i < 19)
+    {
+            zombies.push({x:random(1500,1800),
+                        y:(totalHeight/2+30),
+                        speed: random(1, 10),
+            attack: 0,
+            alive: true,
+            hp: 50});
+        i++;
+    } 
+        function update()
+        {
+            clearScreen();
+            //Musik
+            musicbg.play();
+            //Alla olika väggar
+        
+            rectangle(0, 0, totalWidth, 10, "black")
+            rectangle(0, 745, totalWidth, 10, "black")
+            rectangle(0, 10, 10, 735, "black")
+            rectangle(totalWidth, 10, -10, 735, "black")
+            
+            //Spawnar player 1 + rörelse
+            picture(player1.x, player1.y, "gubbe 1 utklippt.png")
+
+            if (keyboard.d)
+            {
+                player1.x += 5;
+            }
+                
+            if (keyboard.a)
+            {
+                player1.x -= 5;
+            }
+            picture(player2.x, player2.y, "gubbe 2 utklippt.png")
+
+            if (keyboard.right)
+            {
+                player2.x += 5;
+            }
+                
+            if (keyboard.left)
+            {
+                player2.x -= 5;
+            }
+               
+            
+            //Skott player1
+            if (p < 10){p++}
+            if (keyboard.space && p ==10)
+            {
+            skottm[skjuta].play();
+            skotts.push({x: player1.x + 105, y: player1.y + 102});
+            p = 0;
+            
+            }
+            //Skott player2
+            if (o < 10){o++}
+            if (keyboard.enter && o ==10)
+            {
+            skottm[skjuta].play();
+            skotts.push({x: player2.x + 115, y: player2.y + 88});
+            o = 0;
+            }
+            for (let i = 0; i < skotts.length; i++)
+            {                                
+                var skott  = skotts[i]
+            
+                circle(skott.x, skott.y, 3, "black")
+
+                skott.x += 30;                     
+            }
+            skjuta++;
+            if (skjuta >= 100)
+            {
+                skjuta = 0;
+            }
+            i = 0;
+            //För att spawna zombies
+            while (i < 19)
+            {
+                var zombie = zombies[i]
+            
+                if (zombie.alive)
+                {
+                    picture(zombie.x, zombie.y, "zombie utklippt 1.png");
+        
+                    zombie.x -= 3;
+                    if (zombie.x < 205) 
+                    {
+                        zombie.x += 3;
+                    }
+                    //Zombies hp bar
+                    rectangle(zombie.x + 45, zombie.y - 10, zombie.hp, 10, "yellow");
+                    for(let z = 0; z < skotts.length; z++)
+                    {
+                    //Skott skada på zombies
+                    if (distance(zombie.x, zombie.y, skotts[z].x, skotts[z].y) < 45)
+                    {
+                        zombie.hp -= skottskada;
+                    }
+                    }
+                    if(zombie.hp <= 0)
+                    {
+                        zombie.alive = false;
+                        points++;
+                    }
+                    //Zombie skada
+                    if (zombie.x < 240)
+                    {
+                        murhp -= zombieskada;
+                        zombie.attack++;
+                    }
+                    if (zombie.attack < 1)
+                    {
+                        zombie.attack++;
+                    }
+                    if (zombieattack == zombie.delay)
+                    {
+                        zombie.attack = 0;
+                    }
+                }
+            i++;      
+            }
+           
+            //hp för område som zombies vill ta över
+            rectangle(120, 745, 200, 10, "lightgreen")
+            if (murhp <= 750)
+            {
+                rectangle(270, 745, 50, 10, "red")
+            }
+            if (murhp <= 500)
+            {
+                rectangle(220, 745, 100, 10, "red")
+            }
+            if (murhp <= 250)
+            {
+                rectangle(170, 745, 150, 10, "red")
+            }
+            if (murhp <= 0)
+            {
+                rectangle(120, 745, 200, 10, "red")
+                end++;
+            }
+            //Vinst och förlust alerts
+            if(end == 4)
+            {
+                
+                alert("Du dog och fick " + points);
+                stopUpdate();
+            }
+            if (points == 19)
+            {
+                win++;
+            }
+            if (win == 4)
+            {
+                alert("Du vann");
+                stopUpdate();
+            }
+            
+           text(30,50,50, "Poäng " +  points,"yellow")
+
+        }  
+    </script>
+</body>
+</html>

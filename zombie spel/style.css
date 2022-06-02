@@ -1,0 +1,23 @@
+body {background-color:green;}
+.container {
+    justify-content:space-around;
+    display:flex;
+    flex-wrap:wrap;
+    text-align:center;
+    }
+    
+    .my-container {
+      max-width: 800px;
+      position: relative;
+      margin: auto;
+    }
+    .item {
+        width: 16%;
+        height: 150px;
+        background-color:lightblue;
+        border-color: black;
+        border-style: ridge;
+        font-size: 20pt;
+        font-style: Verdana;}
+
+      
